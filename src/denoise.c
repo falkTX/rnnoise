@@ -402,7 +402,7 @@ static void frame_synthesis(DenoiseState *st, float *out, const kiss_fft_cpx *y)
   int i;
   inverse_transform(x, y);
   apply_window(x);
-  for (i=0;i<FRAME_SIZE;i++) out[i] = x[i] + st->synthesis_mem[i];
+  for (i=0;i<FRAME_SIZE;i++) out[i] = (x[i] + st->synthesis_mem[i]) * (1.f / 32767.f);
   RNN_COPY(st->synthesis_mem, &x[FRAME_SIZE], FRAME_SIZE);
 }
 
@@ -410,8 +410,8 @@ void rnn_biquad(float *y, float mem[2], const float *x, const float *b, const fl
   int i;
   for (i=0;i<N;i++) {
     float xi, yi;
-    xi = x[i];
-    yi = x[i] + mem[0];
+    xi = x[i] * 32767.f;
+    yi = x[i] * 32767.f + mem[0];
     mem[0] = mem[1] + (b[0]*(double)xi - a[0]*(double)yi);
     mem[1] = (b[1]*(double)xi - a[1]*(double)yi);
     y[i] = yi;
