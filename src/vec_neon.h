@@ -366,7 +366,7 @@ static inline void sparse_sgemv8x4(float *out, const float *w, const int *idx, i
 #define MAX_INPUTS 2048
 #define MAX_OUTPUTS 8192
 
-#if __ARM_FEATURE_DOTPROD
+#ifdef __ARM_FEATURE_DOTPROD
 static inline int32x4_t vdotprod(int32x4_t acc, int8x16_t a, int8x16_t b) {
   return vdotq_s32(acc, a, b);
 }
